@@ -29,6 +29,7 @@ import {
     UserGroupIcon,
 } from "@heroicons/react/24/solid";
 import { LocModal } from "../Modal/LocModal";
+import { TakeWayModal } from "../Modal/TakeWayModal";
 
 const navListMenuItems = [
     {
@@ -196,6 +197,7 @@ function NavList() {
 
 export function NavbarLandingPage() {
     const [showLocation, setShowLocation] = React.useState(false);
+    const [showTakeWay, setShowTakeWay] = React.useState(false);
     const [openNav, setOpenNav] = React.useState(false);
 
 
@@ -211,6 +213,10 @@ export function NavbarLandingPage() {
         setShowLocation(true);
     }
 
+    const handleOpenTakeWay = () => {
+        setShowTakeWay(true);
+    }
+
 
 
 
@@ -223,11 +229,9 @@ export function NavbarLandingPage() {
                         <NavList />
                     </div>
                     <div className="hidden gap-2 lg:flex">
-                        {/* <button className="px-3 py-2 font-medium text-gray-900 text-sm hover:border  border-gray-900 bg-none transition duration-200" onClick={handleOpenLocation} >
-                            LOCATION
-                        </button> */}
+
                         <ul className="flex gap-1">
-                            <li><a href="#" className="px-3 py-2 font-medium text-gray-900 text-sm hover:border  border-gray-900 bg-none transition duration-200">TAKE WAY</a></li>
+                            <li><a href="#" className="px-3 py-2 font-medium text-gray-900 text-sm hover:border  border-gray-900 bg-none transition duration-200" onClick={handleOpenTakeWay}>TAKE WAY</a></li>
                             <li><a href="#" className="px-3 py-2 font-medium text-gray-900 text-sm hover:border  border-gray-900 bg-none transition duration-200" onClick={handleOpenLocation}>LOCATION</a></li>
                         </ul>
                     </div>
@@ -252,8 +256,15 @@ export function NavbarLandingPage() {
                         <button className="px-3 py-2 bg-green-500 hover:bg-green-600 text-white">Location</button>
                     </div>
                 </Collapse>
+                {/* <Collapse open={openNav}>
+                    <NavList />
+                    <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
+                        <button className="px-3 py-2 bg-green-500 hover:bg-green-600 text-white">Takeway</button>
+                    </div>
+                </Collapse> */}
             </Navbar>
             {showLocation && <LocModal setShowLocation={setShowLocation} />}
+            {showTakeWay && <TakeWayModal setShowTakeWay={setShowTakeWay} />}
         </div>
 
     );
