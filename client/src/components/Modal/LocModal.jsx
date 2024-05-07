@@ -13,7 +13,7 @@ export const LocModal = ({ setShowLocation }) => {
             <div className="modal-container bg-white w-96 md:w-2/3 mx-auto rounded shadow-lg z-50 overflow-y-auto">
                 <div className="modal-content py-4 px-6">
                     <div className="flex justify-between items-center">
-                        <p className="text-2xl font-bold">LOCATION MAPS</p>
+                        <p className="text-2xl font-bold">Lokasi Kami</p>
                         <IconButton onClick={handleCloseLocation} className="modal-close cursor-pointer z-50">
 
                             <svg

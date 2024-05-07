@@ -1,70 +1,275 @@
-# Getting Started with Create React App
+import React, { useState, useEffect } from 'react';
+import { IconButton } from '@material-ui/core';
+import { PlusIcon, MinusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import axios from 'axios';
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+export const TakeWayModal = ({ setShowTakeWay }) => {
+const [totalPrice, setTotalPrice] = useState(0);
+const [content, setContent] = useState([]);
 
-## Available Scripts
+    const handleCloseTakeWay = () => {
+        setShowTakeWay(false);
+    }
 
-In the project directory, you can run:
+    const handleCheckout = () => {
+        setTotalPrice(0);
+        setShowTakeWay(false); // Sembunyikan modal checkout setelah berhasil checkout
+        console.log('Checkout successful!');
 
-### `npm start`
+    };
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+    useEffect(() => {
+        // Ambil data dari server
+        axios.get('http://localhost/kampung-rasa/server/MenuResto.php')
+            .then(response => {
+                // Tambahkan prop 'quantity' dengan nilai awal 0 ke setiap item
+                const dataWithQuantity = response.data.map(item => ({ ...item, quantity: 0 }));
+                setContent(dataWithQuantity);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }, []);
 
-### `npm test`
+    useEffect(() => {
+        // Hitung total harga berdasarkan kuantitas dan harga setiap item
+        const totalPrice = content.reduce((acc, item) => {
+            return acc + (item.harga * item.quantity);
+        }, 0);
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+        // Atur total harga
+        setTotalPrice(totalPrice);
+    }, [content]);
 
-### `npm run build`
+    return (
+        <div className="modal fixed w-full h-full top-0 left-0 flex flex-col items-center justify-center z-50 overflow-y-auto p-4">
+            <div className="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+            <div className="modal-container bg-white w-96 md:w-2/3 mx-auto rounded shadow-lg z-50 overflow-y-auto">
+                <div className="modal-content py-4 px-6">
+                    <div className="flex justify-between items-center">
+                        <p className="text-2xl font-bold">TAKEWAY</p>
+                        <IconButton onClick={handleCloseTakeWay} className="modal-close cursor-pointer z-50">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="feather feather-x"
+                            >
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </IconButton>
+                    </div>
+                    <form>
+                        <div className="flex flex-col gap-2">
+                            <input type="text" placeholder="Name" className="border border-gray-300 rounded-sm p-2" />
+                            <input type="text" placeholder="Phone" className="border border-gray-300 rounded-sm p-2" />
+                            <input type="time" placeholder="date" className="border border-gray-300 rounded-sm p-2" />
+                            <p className="text-2xl font-bold">CHOOSE MENU</p>
+                            <p className="text-xl font-bold">PAKET NASI</p>
+                            <div className="grid grid-cols-3 gap-2">
+                                {content.map((menuContent) => (
+                                    <CardMenu
+                                        key={menuContent.idMenu}
+                                        menuContent={menuContent}
+                                        setContent={setContent}
+                                        totalPrice={totalPrice}
+                                        setTotalPrice={setTotalPrice}
+                                    />
+                                ))}
+                            </div>
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+                            <p className="text-xl font-bold">MASAKAN LAUT</p>
+                            <div className="grid grid-cols-3 gap-2">
+                                {content.map((menuContent) => (
+                                    <CardMenu
+                                        key={menuContent.idMenu}
+                                        menuContent={menuContent}
+                                        setContent={setContent}
+                                        totalPrice={totalPrice}
+                                        setTotalPrice={setTotalPrice}
+                                    />
+                                ))}
+                            </div>
+                            {/* checkout price */}
+                            <div className="flex justify-between mt-24 border border-gray-300 p-2 bg-gray-200 items-center">
+                                <p className="text-2xl font-bold  justify-center">Total Price </p>
+                                <p className="text-2xl font-bold">Rp. {totalPrice}</p>
+                                <button className='px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-sm transition duration-200' onClick={handleCheckout}>CHECKOUT</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+}
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+function CardMenu({ menuContent, setContent, totalPrice, setTotalPrice }) {
+const [quantity, setQuantity] = useState(0); // Tambahkan state quantity di sini
 
-### `npm run eject`
+const handleDelete = () => {
+if (quantity > 0) {
+// Hanya kurangi kuantitas jika ada
+setQuantity(quantity === 0);
+// Kurangi total harga berdasarkan harga item yang dihapus
+setTotalPrice(totalPrice - (menuContent.harga \* quantity));
+}
+};
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+    return (
+        <div className="border border-gray-300 rounded-sm p-2" id='cardMenu'>
+            <img src={menuContent.gambar} alt="" className='rounded-md w-[280px] h-[280px]' />
+            <div className="flex gap-2 p-2 items-center justify-center">
+                <p className="text-center">{menuContent.namaMenu}</p>
+                <p className="text-center">Rp. {menuContent.harga}</p>
+            </div>
+            <div className="flex items-center justify-center">
+                <QuantityButton
+                    quantity={quantity}
+                    setQuantity={setQuantity}
+                    setContent={setContent}
+                    menuContent={menuContent}
+                    totalPrice={totalPrice}
+                    setTotalPrice={setTotalPrice}
+                />
+                <button className="p-1 bg-red-500 text-white rounded" onClick={handleDelete}>
+                    <TrashIcon className="w-6 h-6" />
+                </button>
+            </div>
+        </div>
+    );
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+}
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+function QuantityButton({ quantity, setQuantity, setContent, menuContent, totalPrice, setTotalPrice }) {
+const incrementQuantity = () => {
+setQuantity(quantity + 1);
+setContent(prevContent => {
+return prevContent.map(item => {
+if (item.idMenu === menuContent.idMenu) {
+return { ...item, quantity: item.quantity + 1 };
+}
+return item;
+});
+});
+// Tambahkan harga item ke total harga
+setTotalPrice(totalPrice + menuContent.menuPrice);
+};
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+    const decrementQuantity = () => {
+        if (quantity > 0) {
+            setQuantity(quantity - 1);
+            setContent(prevContent => {
+                return prevContent.map(item => {
+                    if (item.idMenu === menuContent.idMenu) {
+                        return { ...item, quantity: item.quantity - 1 };
+                    }
+                    return item;
+                });
+            });
+            // Kurangi harga item dari total harga
+            setTotalPrice(totalPrice - menuContent.menuPrice);
+        }
+    };
 
-## Learn More
+    return (
+        <div className="flex items-center space-x-2 mx-auto">
+            <button className="p-1" onClick={decrementQuantity}>
+                <MinusIcon className="w-6 h-6" />
+            </button>
+            <span className="text-center">{quantity}</span>
+            <button className="p-1" onClick={incrementQuantity}>
+                <PlusIcon className="w-6 h-6" />
+            </button>
+        </div>
+    );
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+}
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+function ButtonGroup({ quantity, setQuantity }) {
+return (
 
-### Code Splitting
+<div className="flex items-center space-x-4 border border-gray-300 rounded-md p-2">
+<QuantityButton quantity={quantity} setQuantity={setQuantity} />
+</div>
+);
+}
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+export default ButtonGroup;
 
-### Analyzing the Bundle Size
+<?php
+header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
+include 'koneksi.php'; // Sertakan file koneksi.php untuk menghubungkan ke database
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+$query = 'SELECT idTagihan, total FROM tagihan'; // Query SQL untuk mengambil data dari database
+$result = $connect->query($query); // Eksekusi query
 
-### Advanced Configuration
+$data = array(); // Inisialisasi array untuk menyimpan data
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row; // Tambahkan setiap baris data ke dalam array $data
+    }
+}
 
-### Deployment
+echo json_encode($data); // Keluarkan data dalam format JSON
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+$connect->close(); // Tutup koneksi database
+?>
 
-### `npm run build` fails to minify
+<?php
+header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+include 'koneksi.php'; // Sertakan file koneksi.php untuk menghubungkan ke database
+
+// Tangani permintaan OPTIONS
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200); // Kode status 200 OK
+    exit(); // Keluar dari skrip
+}
+
+// Tangani permintaan POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Ambil data total harga dari permintaan POST
+    $input = json_decode(file_get_contents('php://input'), true);
+    $totalHarga = $input['totalHarga'];
+
+    // Query SQL untuk menambahkan data tagihan
+    $query = "INSERT INTO tagihan (total) VALUES ($totalHarga)";
+
+    if ($connect->query($query) === TRUE) {
+        // Jika data berhasil ditambahkan, ambil ID tagihan yang baru saja dibuat
+        $idTagihan = $connect->insert_id;
+        // Buat data tagihan dalam bentuk array
+        $data = array('idTagihan' => $idTagihan, 'total' => $totalHarga);
+        // Keluarkan data dalam format JSON
+        echo json_encode($data);
+    } else {
+        // Jika terjadi kesalahan, keluarkan pesan kesalahan dalam format JSON
+        echo json_encode(array('error' => 'Gagal menambahkan data tagihan: ' . $connect->error));
+    }
+
+    // Keluar dari skrip
+    exit();
+}
+
+// Tutup koneksi database
+$connect->close();
+?>

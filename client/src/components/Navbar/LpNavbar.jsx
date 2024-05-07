@@ -159,38 +159,11 @@ function NavListMenu() {
 function NavList() {
     return (
         <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:p-1">
-            <Typography
-                as="a"
-                href="#"
-                variant="small"
-                color="blue-gray"
-                className="font-medium"
-            >
-                <ListItem className="flex items-center gap-2 py-2 pr-4 text-gray-900 hover:border border-gray-900 rounded-none hover:bg-[#fbfbe9]">ABOUT</ListItem>
-            </Typography>
-            {/* <NavListMenu /> */}
-            <Typography
-                as="a"
-                href="#"
-                variant="small"
-                color="blue-gray"
-                className="font-medium"
-            >
-                <ListItem className="flex items-center gap-2 py-2 pr-4 text-gray-900 hover:border border-gray-900 rounded-none hover:bg-[#fbfbe9]">
-                    RESERVATION
-                </ListItem>
-            </Typography>
-            <Typography
-                as="a"
-                href="#"
-                variant="small"
-                color="blue-gray"
-                className="font-medium"
-            >
-                <ListItem className="flex items-center gap-2 py-2 pr-4 text-gray-900 hover:border border-gray-900 rounded-none hover:bg-[#fbfbe9]">
-                    MENU
-                </ListItem>
-            </Typography>
+            <li className="list-none">
+                <a href="#" className="px-3 py-2 font-medium text-gray-900 text-sm hover:border  border-gray-900 bg-none transition duration-200" >Tentang Kami</a>
+                <a href="#" className="px-3 py-2 font-medium text-gray-900 text-sm hover:border  border-gray-900 bg-none transition duration-200" >Reservasi</a>
+                <a href="#" className="px-3 py-2 font-medium text-gray-900 text-sm hover:border  border-gray-900 bg-none transition duration-200" >Menu</a>
+            </li>
         </List>
     );
 }
@@ -199,7 +172,6 @@ export function NavbarLandingPage() {
     const [showLocation, setShowLocation] = React.useState(false);
     const [showTakeWay, setShowTakeWay] = React.useState(false);
     const [openNav, setOpenNav] = React.useState(false);
-
 
 
     React.useEffect(() => {
@@ -231,8 +203,8 @@ export function NavbarLandingPage() {
                     <div className="hidden gap-2 lg:flex">
 
                         <ul className="flex gap-1">
-                            <li><a href="#" className="px-3 py-2 font-medium text-gray-900 text-sm hover:border  border-gray-900 bg-none transition duration-200" onClick={handleOpenTakeWay}>TAKE WAY</a></li>
-                            <li><a href="#" className="px-3 py-2 font-medium text-gray-900 text-sm hover:border  border-gray-900 bg-none transition duration-200" onClick={handleOpenLocation}>LOCATION</a></li>
+                            <li><a href="#" className="px-3 py-2 font-medium text-gray-900 text-sm hover:border  border-gray-900 bg-none transition duration-200" onClick={handleOpenTakeWay}>Take Away</a></li>
+                            <li><a href="#" className="px-3 py-2 font-medium text-gray-900 text-sm hover:border  border-gray-900 bg-none transition duration-200" onClick={handleOpenLocation}>Lokasi</a></li>
                         </ul>
                     </div>
                     <IconButton

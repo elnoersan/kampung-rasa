@@ -16,7 +16,7 @@ export function FooterWithLogo() {
                             color="blue-gray"
                             className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500"
                         >
-                            <div>ABOUT US</div>
+                            <div>Tentang Kami</div>
                         </Typography>
                     </li>
                     <li>
@@ -28,7 +28,7 @@ export function FooterWithLogo() {
                         >
                             <div>
 
-                                RESERVATION
+                                Reservasi
                             </div>
                         </Typography>
                     </li>
@@ -41,7 +41,7 @@ export function FooterWithLogo() {
                         >
                             <div>
 
-                                MENU
+                                Menu
                             </div>
                         </Typography>
                     </li>
@@ -54,7 +54,7 @@ export function FooterWithLogo() {
                         >
                             <div>
 
-                                CONTACT US
+                                Hubungi Kami
                             </div>
                         </Typography>
                     </li>
